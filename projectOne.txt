@@ -1,0 +1,81 @@
+Q.1 Write a mapreduce/pig program to calculate the number of cases investigated under each FBICode.
+
+
+
+A = load'/Crimes_-_2001_to_present.csv' using PigStorage(',');
+
+B = foreach A generate $0 as Id, $14 as FBIcode;
+
+C = Group B by FBIcode;
+
+D = foreach C generate group,COUNT(B.Id) as noofcases;
+
+Dump D;
+
+
+
+Q.2 Write a mapreduce/pig program to calculate the number of cases investigated under FBICode 32.
+
+
+
+A = load'/Crimes_-_2001_to_present.csv' using PigStorage(',');
+
+B = foreach A generate $0 as Id, $14 as FBIcode;
+
+C = Group B by FBIcode;
+
+D = foreach C generate group as code,COUNT(B.Id) as noofcases;
+
+E = filter D by code =='32';
+
+Dump E;
+
+
+
+Q3. Write the mapreduce/pig program to calculate the number of arrest in theft district wise.
+
+
+
+A = load'/Crimes_-_2001_to_present.csv' using PigStorage(',');
+
+B = foreach A generate $5 as type,$8 as arrest,$11 as district;
+
+C = filter B by type=='THEFT' AND arrest=='true';
+
+D = foreach C generate type,district,arrest;
+
+E = group D by district;
+
+F = foreach E generate group ,COUNT(D.arrest);
+
+Dump F;
+
+
+
+Q4. Write mapreduce/pig program to calculate the number of arrest done between oct2014 and oct2015.
+
+
+
+A = load'/Crimes_-_2001_to_present.csv' using PigStorage(',') As(f1:chararray,f2:chararray,f3:chararray,f4:chararray,f5:chararray,f6:chararray,f7:chararray,f8:chararray,f9:chararray);
+
+B = foreach A generate SUBSTRING(f3,0,10) as datestring,f9 as arrest;
+
+C = foreach B generate ToDate(datestring,'MM/dd/yyyy') as date,arrest;
+
+D = filter C by date>ToDate('10/01/2014','MM/dd/yyyy') and date<ToDate('10/31/2015','MM/dd/yyyy');
+
+E = foreach D generate date,arrest;
+
+F = filter E by arrest=='true';
+
+G = foreach F generate date,arrest;
+
+H = group G by date;
+
+I = foreach H generate group,COUNT(G.arrest);
+
+Dump I; 
+
+
+
+
